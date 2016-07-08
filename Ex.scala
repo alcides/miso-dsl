@@ -15,7 +15,9 @@ object Main {
 	
 	def main(args:Array[String]) {
 
-		MisoRuntime.runSeq(10, objects, others)
+		//MisoRuntime.runSeq(10, objects, others)
+
+		MisoRuntime.runPar(10, objects, others)
 
 		println(others(1).a)
 	}

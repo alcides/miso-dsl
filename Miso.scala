@@ -1,7 +1,8 @@
 import scala.reflect._
 import java.util.concurrent.CyclicBarrier
-import scala.concurrent.Future
+import scala.concurrent._
 import scala.concurrent.forkjoin._
+import scala.concurrent.duration._
 
 
 class WithAccessor { protected def cloneUnprotected = clone }
@@ -46,9 +47,11 @@ object MisoRuntime {
 		val total = os.map(_.instances.length).reduceLeft(_+_);
 		val barrier = new CyclicBarrier(total);
 		
-		for ( i <- 1 to it) {
-			
-			//var fs:Future[Cell[_]] = os.map(Future { _.iterate })
+		for ( i <- 1 to it) {	
+			var fs:Future[Seq[Unit]] = Future.sequence(os.map(a => Future { a.iterate }))
+			Await.ready(fs, Duration.Inf)
+			fs = Future.sequence(os.map(a => Future { a.endIteration }))
+			Await.ready(fs, Duration.Inf)
 		}
 	}	
 	
