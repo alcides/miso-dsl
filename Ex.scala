@@ -12,10 +12,11 @@ object Main {
 	def main(args:Array[String]) {
 		
 		val objects = new Cell[CellMemory](20)
+		val others = new Cell[CellMemory](20)
 
-		MisoRuntime.runSeq(10,objects)
+		MisoRuntime.runSeq(10,objects, others)
 
-		println(objects(1).a)
+		println(others(1).a)
 	}
 }
 
