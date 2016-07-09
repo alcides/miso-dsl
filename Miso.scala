@@ -6,14 +6,14 @@ import scala.concurrent.duration._
 
 
 class WithAccessor { protected def cloneUnprotected = clone }
-trait CellMem extends WithAccessor with Cloneable {
+trait MisoState extends WithAccessor with Cloneable {
 	def cloneO[T]():T = {
 		this.cloneUnprotected.asInstanceOf[T];
 	}
 	def transition();
 }
 
-class Cell[Mem <: CellMem](val number:Int)(implicit m: ClassTag[Mem]) {
+class Cell[Mem <: MisoState](val number:Int)(implicit m: ClassTag[Mem]) {
   
   var instances:Array[Mem] = new Array[Mem](number);
   var instances2:Array[Mem] = null;
