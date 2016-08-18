@@ -22,7 +22,7 @@ trait MisoState extends WithAccessor with Cloneable {
 	}
 }
 
-class Cell[Mem <: MisoState](val number:Int)(implicit m: ClassTag[Mem]) {
+class Cell[Mem <: MisoState](val number:Int, historySize:Int = 0)(implicit m: ClassTag[Mem]) {
   
   
 	var history:Stack[Array[Mem]] = Stack();
@@ -42,6 +42,7 @@ class Cell[Mem <: MisoState](val number:Int)(implicit m: ClassTag[Mem]) {
 
 	def endIteration {
 		history.push(instances2)
+		history = history.splitAt(historySize)._1
 		instances = instances2;
 	}
 

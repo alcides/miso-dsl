@@ -13,7 +13,7 @@ class FibState extends MisoState {
 }
 
 object Fib {
-	val number = new Cell[FibState](1)
+	val number = new Cell[FibState](1, historySize=2)
 	def main(args:Array[String]) {
 		//MisoRuntime.runSeq(10, number)
 		MisoRuntime.runPar(5, number)
