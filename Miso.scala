@@ -1,4 +1,5 @@
 import scala.reflect._
+import scala.collection.mutable.Stack
 import java.util.concurrent.CyclicBarrier
 import scala.concurrent._
 import scala.concurrent.forkjoin._
@@ -11,29 +12,42 @@ trait MisoState extends WithAccessor with Cloneable {
 		this.cloneUnprotected.asInstanceOf[T];
 	}
 	def transition();
+	
+	
+	type T
+	var misoPos = 0
+	var misoCell:Cell[_] = null
+	def %(i:Int) = {
+		misoCell.history(i)(misoPos).asInstanceOf[T]
+	}
 }
 
 class Cell[Mem <: MisoState](val number:Int)(implicit m: ClassTag[Mem]) {
   
-  var instances:Array[Mem] = new Array[Mem](number);
-  var instances2:Array[Mem] = null;
   
-  for (i <- 0 to number-1) {
-	  instances(i) = m.runtimeClass.newInstance.asInstanceOf[Mem];
-  }
-  
-  def iterate {
-	  instances2 = instances.map(m => m.cloneO[Mem])
-	  instances2.foreach { m => m.transition };
-  }
-  
-  def endIteration {
-	  instances = instances2;
-  }
-  
-  def apply(i:Integer):Mem = {
-	  instances(i);
-  }
+	var history:Stack[Array[Mem]] = Stack();
+	var instances:Array[Mem] = new Array[Mem](number);
+	var instances2:Array[Mem] = null;
+
+	for (i <- 0 to number-1) {
+		instances(i) = m.runtimeClass.newInstance.asInstanceOf[Mem];
+		instances(i).misoPos = i
+		instances(i).misoCell = this
+	}
+
+	def iterate {
+		instances2 = instances.map(m => m.cloneO[Mem])
+		instances2.foreach { m => m.transition };
+	}
+
+	def endIteration {
+		history.push(instances2)
+		instances = instances2;
+	}
+
+	def apply(i:Integer):Mem = {
+		instances(i);
+	}
   
   
 }

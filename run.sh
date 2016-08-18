@@ -1,4 +1,4 @@
 rm -rf *.class
-scalac *.scala
-scala GA
+scalac  -deprecation *.scala
+scala Fib
 rm -rf *.class
