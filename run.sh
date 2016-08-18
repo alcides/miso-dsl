@@ -1,3 +1,4 @@
 rm -rf *.class
 scalac *.scala
-scala Main
+scala GA
+rm -rf *.class
